@@ -1,0 +1,292 @@
+*:focus {
+  outline: none;
+}
+
+/* customer header */
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  /* position: fixed;
+  top :0; */
+
+}
+
+.header-wrapper ul {
+  display: flex;
+}
+
+.header-wrapper ul li {
+  list-style-type: none;
+  padding: 5px;
+}
+
+.header-wrapper ul li a {
+  text-decoration: none;
+}
+
+.footer-wrapper {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 10px;
+  background: white;
+  background-color: red;
+}
+
+
+/*  */
+.conatainer {
+  text-align: center;
+}
+
+.input-field {
+  width: 200px;
+  height: 30px;
+
+}
+
+.input-wrapper {
+  margin: 20px;
+}
+
+.button {
+  width: 200px;
+  height: 30px;
+}
+
+.button-link {
+  margin: 20px;
+  border: 0;
+  background-color: transparent;
+  color: skyblue;
+
+}
+
+.input-error {
+  color: red;
+  margin: 20px;
+  position: absolute;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 10px;
+}
+
+table,
+img {
+  height: 80px;
+}
+
+.main-page-banner,
+.restaurant-page-banner {
+  background-image: url("https://static.vecteezy.com/system/resources/thumbnails/047/595/484/small/a-variety-of-indian-dishes-in-white-bowls-on-a-pure-white-background-photo.jpg");
+  background-color: rgb(0, 0, 0, 0.4);
+  background-blend-mode: multiply;
+  height: 300px;
+  padding: 20px;
+  text-align: center;
+}
+
+.input-wrapper {
+  background-color: #fff;
+  width: 50%;
+  padding: 4px;
+  margin: auto;
+  border-radius: 4px;
+
+}
+
+.select-input {
+  height: 40px;
+  border: none;
+  width: 40%;
+  padding-left: 0px;
+
+}
+
+.search-input {
+  height: 40px;
+  border: none;
+  width: 40%;
+  padding-left: 10px;
+  border-left: 1px solid #ccc;
+}
+
+.location-list,
+ul {
+  margin-left: 160px;
+  border-radius: 2px;
+
+}
+
+.location-list {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+  list-style: none;
+  padding: 4px;
+  background-color: #fff;
+  width: 20%;
+
+
+}
+
+/* .restaurant-list-container{
+  display: flex;
+  flex-wrap: wrap;
+
+}
+.restaurant-list-wrapper{
+  background-color: orange;
+  padding: 5px;
+  margin: 2px;
+      text-align: center
+
+} */
+
+.restaurant-list-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 10px 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.restaurant-list-wrapper {
+  background: orange;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  transition: 0.3s ease;
+}
+
+.restaurant-list-wrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.heading-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+}
+
+.heading-wrapper h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #222;
+}
+
+.heading-wrapper h5 {
+  margin: 0;
+  font-size: 13px;
+  color: #444;
+}
+
+.address-wrapper {
+  margin-top: 12px;
+}
+
+.address-wrapper p {
+  margin: 0;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .restaurant-list-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .restaurant-list-container {
+    grid-template-columns: 1fr;
+    padding: 0 12px;
+  }
+}
+
+.restaurant-page-banner h1 {
+  font-size: 65px;
+  color: white;
+}
+
+.cart-list {
+  width: 100%;
+  display: flex;
+}
+
+.cart-list-box-1 {
+  width: 20%;
+}
+
+.cart-list-box-2 {
+  width: 80%;
+}
+
+.cart-list-box-3 {
+  width: 20%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.total-price-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-around;
+  padding: 10px 60px;
+  margin-bottom: 50px;
+
+
+}
+
+.total-price-wrapper,
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 20px;
+
+
+}
+
+.total-price-wrapper-block-1 {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  padding-left: 190px;
+
+}
+
+.total-price-wrapper-block-2 {
+  margin: auto;
+}
+
+.total-price-wrapper-block-2 button {
+  padding: 10px 20px;
+  background-color: rgb(13, 199, 118);
+  color: white;
+  border: #ccc;
+  border-radius: 4px;
+  margin: auto;
+}
