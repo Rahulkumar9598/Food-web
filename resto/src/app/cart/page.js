@@ -3,10 +3,16 @@ import React, { useState } from 'react'
 import CustomerHeader from '../_components/CustomerHeader.js';
 import Footer from '../_components/Footer';
 import { Delivery_Charges, TAX } from '../lib/constant/DelieveryChargers.js';
+import { useRouter } from 'next/navigation.js';
 
 const page = () => {
+
+    const router = useRouter()
+    const user = JSON.parse(localStorage.getItem("user"))
+    console.log(user, " this is user from the cart")
+
     const [foodItems, setFoodItems] = useState(JSON.parse(localStorage.getItem("cart")) || []);
-    console.log(foodItems , "cart food items")
+
     const [total] = useState(() => foodItems.length === 1 ? foodItems[0].price : foodItems.reduce((total, item) => {
         return total + item.price;
     }, 0))
@@ -29,6 +35,16 @@ const page = () => {
 
 
     };
+
+    const orderNow = () => {
+        if (user) {
+            router.push("/order")
+
+        } else {
+            router.push("/user-auth?order=true")
+        }
+    }
+
 
     return (
         <div >
@@ -131,7 +147,7 @@ const page = () => {
                 </div>
 
                 <div className='total-price-wrapper-block-2'>
-                    <button>Order Now</button>
+                    <button onClick={orderNow}>Order Now</button>
                 </div>
             </div>
             <Footer />

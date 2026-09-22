@@ -48,7 +48,7 @@ const handleEditFoodItem = async()=>{
 }
     return (
         <>
-            <div className='conatainer'>
+            <div className='container'>
 
                 <h1>Update Food Item</h1>
                 <div className='input-wrapper'>

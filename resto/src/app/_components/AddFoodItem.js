@@ -40,7 +40,7 @@ const AddFoodItem = (props) => {
 
     return (
         <>
-            <div className='conatainer'>
+            <div className='container'>
 
                 <h1>Add New Food Item</h1>
                 <div className='input-wrapper'>

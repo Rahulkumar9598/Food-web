@@ -24,7 +24,8 @@ const Page = (props) => {
             localStorage.getItem("cart") || "[]"
         );
 
-        setAddedItem(cart);
+         setAddedItem(Array.isArray(cart) ? cart : []);
+
     }, []);
 
 
@@ -45,7 +46,7 @@ const Page = (props) => {
 
                 if (response.data.success) {
                     setRestaurantDetails(
-                        response.data.restaurantDetails
+                        response?.data?.restaurantDetails
                     );
 
                     setFoodItems(
@@ -67,30 +68,55 @@ const Page = (props) => {
             localStorage.getItem("cart") || "[]"
         );
 
-        // Check if item already exists
-        const alreadyAdded = oldCart.some(
-            (cartItem) => cartItem._id === item._id
-        );
+        console.log("test1")
+        if (oldCart[0]?.restaurantId !== item?.restaurantId) {
+            localStorage.removeItem("cart")
+        console.log("test2")
 
-        if (alreadyAdded) {
-            return;
+         const newCart = [item];
+
+            localStorage.setItem(
+                "cart",
+                JSON.stringify(newCart)
+            );
+
+               setAddedItem(newCart);
+
+        } else {
+        console.log("test3")
+
+            console.log(item?.restaurantId, "this is item from the details page")
+            console.log(oldCart[0]?.restaurantId, "oldcart from the details page")
+
+
+            // Check if item already exists
+            const alreadyAdded = oldCart?.some(
+                (cartItem) => cartItem?._id === item?._id
+            );
+
+            if (alreadyAdded) {
+                return;
+            }
+
+            const newCart = [...oldCart, item];
+
+            // Update localStorage
+            localStorage.setItem(
+                "cart",
+                JSON.stringify(newCart)
+            );
+
+            // Update React state
+               setAddedItem(Array.isArray(newCart) ? newCart : []);
+
+
+            console.log(
+                newCart,
+                "updated cart"
+            );
+
         }
 
-        const newCart = [...oldCart, item];
-
-        // Update localStorage
-        localStorage.setItem(
-            "cart",
-            JSON.stringify(newCart)
-        );
-
-        // Update React state
-        setAddedItem(newCart);
-
-        console.log(
-            newCart,
-            "updated cart"
-        );
     };
 
 
@@ -100,8 +126,8 @@ const Page = (props) => {
             localStorage.getItem("cart") || "[]"
         );
 
-        const newCart = oldCart.filter(
-            (cartItem) => cartItem._id !== item._id
+        const newCart = oldCart?.filter(
+            (cartItem) => cartItem?._id !== item?._id
         );
 
         // Update localStorage
@@ -111,7 +137,8 @@ const Page = (props) => {
         );
 
         // Update React state
-        setAddedItem(newCart);
+                      setAddedItem(Array.isArray(newCart) ? newCart : []);
+
     };
 
 
@@ -154,9 +181,9 @@ const Page = (props) => {
             <div>
                 {foodItems.length > 0 ? (
 
-                    foodItems.map((item) => {
+                    foodItems?.map((item) => {
 
-                        const isAdded = addedtItem.some(
+                        const isAdded = addedtItem?.some(
                             (cartItem) =>
                                 cartItem?._id === item?._id
                         );
@@ -165,8 +192,8 @@ const Page = (props) => {
                             <div key={item._id}>
 
                                 <img
-                                    src={item.path}
-                                    alt={item.name}
+                                    src={item?.path}
+                                    alt={item?.name}
                                 />
 
                                 <div>

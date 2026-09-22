@@ -11,7 +11,7 @@ const Restaurant = () => {
 
     return (
         <>
-            <div className="conatainer">
+            <div className="container">
                 <RestaurantHeader/>
                 <h1> Rahul</h1>
                 {
