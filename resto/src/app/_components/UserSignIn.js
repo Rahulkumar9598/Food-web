@@ -63,11 +63,11 @@ console.log(props , " this is props")
             </div>
 
             <div className='input-wrapper'>
-                <input type='text' className='input-field' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='enter your name'></input>
+                <input type='password' className='input-field' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='enter your password'></input>
             </div>
 
             <div className='input-wrapper'>
-                <button className='button' onClick={(e) => handleSignIn(e)}>SignUP</button>
+                <button className='button' onClick={(e) => handleSignIn(e)}>SignIn</button>
             </div>
         </form>
     )

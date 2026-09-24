@@ -68,10 +68,8 @@ const Page = (props) => {
             localStorage.getItem("cart") || "[]"
         );
 
-        console.log("test1")
         if (oldCart[0]?.restaurantId !== item?.restaurantId) {
             localStorage.removeItem("cart")
-        console.log("test2")
 
          const newCart = [item];
 
@@ -83,7 +81,6 @@ const Page = (props) => {
                setAddedItem(newCart);
 
         } else {
-        console.log("test3")
 
             console.log(item?.restaurantId, "this is item from the details page")
             console.log(oldCart[0]?.restaurantId, "oldcart from the details page")

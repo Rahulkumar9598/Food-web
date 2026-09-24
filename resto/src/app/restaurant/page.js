@@ -13,7 +13,7 @@ const Restaurant = () => {
         <>
             <div className="container">
                 <RestaurantHeader/>
-                <h1> Rahul</h1>
+                <h1></h1>
                 {
                     login ? <RestaurantLogin /> : <RestaurantSignUp />
 

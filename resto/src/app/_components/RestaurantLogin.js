@@ -48,7 +48,7 @@ const RestaurantLogin = () => {
     return (
         <>
             < h1>
-                Restaurant Login component
+                Restaurant Login 
             </h1>
             <div>
                 <div className="input-wrapper">

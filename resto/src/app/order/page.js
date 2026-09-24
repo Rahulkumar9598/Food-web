@@ -10,7 +10,7 @@ const page = () => {
     const [user, setUser] = useState()
     const [removeCart, setRemoveCart] = useState(false)
     const router = useRouter()
-    
+
 
 
 
@@ -53,19 +53,25 @@ const page = () => {
     };
     const orderNow = async () => {
         let user_id = JSON.parse(localStorage.getItem("user"))?.data?.result?._id
+        let user_city = JSON.parse(localStorage.getItem("user"))?.data?.result?.city
+
+
         let cart = JSON.parse(localStorage.getItem("cart"))
         let restaurantId = cart[0].restaurantId
         let foodsItemsIds = cart?.map((item) => item._id)
 
-        console.log(restaurantId, " this is restaurantId ")
-        console.log(user_id, "this is user_id")
-        console.log(foodsItemsIds, " foodsItemsIds ids")
-
+        const DeliveryBoyResponse = await axios.get("http://localhost:3000/api/deliveryPartner/" + user_city)
+        let deliveryBoy_ids = DeliveryBoyResponse?.data?.result?.map((item) => item._id)
+        let deliveryBoy_id = deliveryBoy_ids[Math.floor(Math.random() * deliveryBoy_ids.length)]
+        if (!deliveryBoy_id) {
+            alert("Delivery Partner is Not Availble ")
+            return false
+        }
         let collection = {
             user_id,
             restaurantId,
             foodsItemsIds,
-            deliveryBoy_id: "6a69ef70e068287a441683ff",
+            deliveryBoy_id: deliveryBoy_id,
             status: "confrim",
             amount: total + (total * TAX / 100) + Delivery_Charges
 

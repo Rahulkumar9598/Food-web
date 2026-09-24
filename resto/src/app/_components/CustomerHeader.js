@@ -66,6 +66,9 @@ const CustomerHeader = (props) => {
                     <li >
                         <Link href="/restaurant">Add Restaurant</Link>
                     </li>
+                     <li >
+                        <Link href="/deliveryPartner">Delivery Partner</Link>
+                    </li>
 
 
                 </ul>
