@@ -189,7 +189,7 @@ const Page = (props) => {
                             <div key={item._id}>
 
                                 <img
-                                    src={item?.path}
+                                    src={item?.image}
                                     alt={item?.name}
                                 />
 

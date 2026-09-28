@@ -22,7 +22,6 @@ export async function GET(request) {
 
     await mongoose.connect(connectionStr) 
     let result = await Restaurants.find(filter)
-    console.log(result , "yyyyyyyyyyyyhhhh")
 
     return NextResponse.json({success:true , result})
 }

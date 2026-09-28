@@ -4,22 +4,26 @@ const restaurantSchema = new mongoose.Schema({
   name: {
     type: String,
   },
-  email:{
-    type:String
+  email: {
+    type: String
   },
-  password:{
-    type:String
+  password: {
+    type: String
   },
-  city:{
-    type:String
+  city: {
+    type: String
   },
-  address:{
-    type:String
+  address: {
+    type: String
   },
-  contact:{
-    type:String
-  }
+  contact: {
+    type: String
+  },
+  image: {
+    type: String,
+    required: true
+  },
 });
 
-export const Restaurants =   mongoose.models.restaurants ||
+export const Restaurants = mongoose.models.restaurants ||
   mongoose.model("restaurants", restaurantSchema);

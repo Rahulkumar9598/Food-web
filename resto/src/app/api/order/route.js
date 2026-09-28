@@ -7,11 +7,13 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
     const payload = await request.json()
+ console.log(payload  , "kkkkkkkkkkkkkkkk")
     let success = false;
-    console.log(payload?.collection, " this is my payload from the order now page")
+    console.log(payload?.collection, " this is my payload from the order now page llllllllllllllll")
     await mongoose.connect(connectionStr)
     const order = new Order(payload?.collection)
     const result = await order.save()
+    console.log(result , ' this is save result of order')
     if (result) {
         success = true
     }
@@ -45,7 +47,6 @@ export async function GET(request) {
         const restaurantIds = orders.map((order) => order.restaurantId)
 
         const restaurants = await Restaurants.find({ _id: { $in: restaurantIds } })
-        console.log(restaurants, " restaurants")
 
         if (restaurants) {
             success = true;

@@ -61,7 +61,7 @@ const FoodItemList = () => {
                                 <td>{item.name}</td>
                                 <td>{item.price}</td>
                                 <td>{item.description}</td>
-                                <td ><img src={item?.path}></img></td>
+                                <td ><img src={item?.image}></img></td>
                                 <td><button onClick={() => handleDelete(item._id)}>Delete</button>
                                     <button onClick={() => router.push(`dashboard/${item._id}`)}>Edit</button></td>
 

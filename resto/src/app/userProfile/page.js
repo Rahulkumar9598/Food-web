@@ -8,6 +8,7 @@ const page = () => {
 
   const getData = async () => {
     const response = await axios.get(`http://localhost:3000/api/order?id=${userId}`)
+    console.log(response , " user profile result")
     if (response.data.success) {
       setUserOrders(response.data.result)
     }

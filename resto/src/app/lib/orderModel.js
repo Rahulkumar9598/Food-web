@@ -29,7 +29,7 @@ const orderSchema = new mongoose.Schema({
 
     amount: {
         type: Number
-    }
+    },
 });
 
 export const Order =

@@ -54,6 +54,8 @@ const page = () => {
     const orderNow = async () => {
         let user_id = JSON.parse(localStorage.getItem("user"))?.data?.result?._id
         let user_city = JSON.parse(localStorage.getItem("user"))?.data?.result?.city
+        let address = JSON.parse(localStorage.getItem("user"))?.data?.result?.address
+
 
 
         let cart = JSON.parse(localStorage.getItem("cart"))
@@ -73,14 +75,14 @@ const page = () => {
             foodsItemsIds,
             deliveryBoy_id: deliveryBoy_id,
             status: "confrim",
-            amount: total + (total * TAX / 100) + Delivery_Charges
+            amount: total + (total * TAX / 100) + Delivery_Charges,
+            address
 
 
         }
         console.log(collection, " this is collection")
 
         const response = await axios.post("http://localhost:3000/api/order", { collection })
-        console.log(response, "this is response")
 
         if (response.data.success) {
             alert("Order Confrimed Succesfully")
