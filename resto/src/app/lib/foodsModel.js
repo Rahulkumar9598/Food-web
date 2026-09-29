@@ -4,10 +4,13 @@ const foodSchema = new mongoose.Schema({
 
   name: {
     type: String,
+    required:true
   },
 
   price: {
     type: Number,
+    required:true
+
   },
 
   image: {
@@ -17,8 +20,14 @@ const foodSchema = new mongoose.Schema({
 
   description: {
     type: String,
-  },
+    required:true
 
+  },
+  category:{
+    type:String,
+    required:true
+
+  },
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "restaurants",

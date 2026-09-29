@@ -1,7 +1,7 @@
-"use client"
-import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
-
+"use client";
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { Utensils } from 'lucide-react';
 
 const CustomerHeader = (props) => {
     const [cartNumber, setCartNumber] = useState(0);
@@ -13,7 +13,6 @@ const CustomerHeader = (props) => {
         if (storedUser) {
             try {
                 const parsedUser = JSON.parse(storedUser);
-
                 setUser(parsedUser?.data?.result?.name || "");
             } catch (error) {
                 console.log("Invalid user data:", error);
@@ -29,52 +28,72 @@ const CustomerHeader = (props) => {
 
     useEffect(() => {
         if (props.removeCart) {
-            setCartNumber(0)
-            localStorage.removeItem("cart")
+            setCartNumber(0);
+            localStorage.removeItem("cart");
         }
-    }, [props.removeCart])
+    }, [props.removeCart]);
 
     return (
+        <header className="sticky top-0 z-50 bg-[#F6F4EB] border-b border-[#E5E0D8]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                {/* Logo Section */}
+                <Link href="/" className="flex items-center gap-3 group">
+                    <div>
+                        <span className="text-2xl font-bold text-black tracking-tight">
+                            Resto
+                        </span>
+                    </div>
+                </Link>
 
-        <>
-            <div className="header-wrapper">
-                <div>
-                    <img style={{
-                        width: "100px",
-                        height: "100px",
-                    }} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTA-ysGap5km_i8-40sHFQPxqWF7cZubQrS2oueoqPoow&s=10" />
-                </div>
+                {/* Navigation Items */}
+                <nav className="flex items-center gap-6">
+                    <Link
+                        href="/"
+                        className="text-[15px] font-medium text-black hover:text-gray-600 transition-colors"
+                    >
+                        Home
+                    </Link>
 
-                <ul >
-                    <li >
-                        <Link href="/"> Home</Link>
-                    </li>
+                    {!user ? (
+                        <Link
+                            href="/user-auth"
+                            className="text-[15px] font-medium text-black hover:text-gray-600 transition-colors"
+                        >
+                            Login
+                        </Link>
+                    ) : (
+                        <Link
+                            href="/userProfile"
+                            className="text-[15px] font-medium text-black hover:text-gray-600 transition-colors"
+                        >
+                            {user?.charAt(0)?.toUpperCase() + user?.slice(1)}
+                        </Link>
+                    )}
 
-                    {
-                        !user ? <li >
-                            <Link href="/user-auth">Login</Link>
-                        </li> : <li > <Link href="/userProfile"> {user?.charAt(0)?.toUpperCase() + user?.slice(1)}</Link></li>
-                    }
+                    <Link
+                        href="/restaurant"
+                        className="hidden md:block text-[15px] font-medium text-black hover:text-gray-600 transition-colors"
+                    >
+                        Add Restaurant
+                    </Link>
 
-                    {/* <li >
-                        <Link href="/user-auth">SignUp</Link>
-                    </li> */}
-                    <li >
-                        <Link href={cartNumber ? "/cart" : "#"}>Cart({cartNumber ? cartNumber : 0})</Link>
-                    </li>
+                    <Link
+                        href="/deliveryPartner"
+                        className="hidden lg:block text-[15px] font-medium text-black hover:text-gray-600 transition-colors"
+                    >
+                        Delivery Partner
+                    </Link>
 
-                    <li >
-                        <Link href="/restaurant">Add Restaurant</Link>
-                    </li>
-                     <li >
-                        <Link href="/deliveryPartner">Delivery Partner</Link>
-                    </li>
-
-
-                </ul>
+                    <Link
+                        href={cartNumber ? "/cart" : "#"}
+                        className="px-5 py-2 rounded-lg border-2 border-black text-[15px] font-medium text-black hover:bg-black hover:text-white transition-all flex items-center gap-2"
+                    >
+                        Cart {cartNumber > 0 && <span className="bg-black text-white text-xs px-2 py-0.5 rounded-full">{cartNumber}</span>}
+                    </Link>
+                </nav>
             </div>
-        </>
-    )
-}
+        </header>
+    );
+};
 
-export default CustomerHeader
+export default CustomerHeader;

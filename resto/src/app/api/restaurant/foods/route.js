@@ -7,7 +7,7 @@
 //  const payload =  await req.json();
 //  let success= false;
 //  console.log(payload , " this is payload form the add food ")
- 
+
 //  await mongoose.connect(connectionStr);
 //  const food = new Foods(payload);
 //  const result = await food.save();
@@ -34,9 +34,11 @@ export async function POST(req) {
     const price = data.get("price");
     const description = data.get("description");
     const restaurantId = data.get("restaurantId");
+    const category = data.get("category")
+
     const image = data.get("image");
 
-    console.log(name, price, description, restaurantId, image);
+    console.log(name, price, description, restaurantId, image , category);
 
     // Image Cloudinary par upload
     const buffer = Buffer.from(await image.arrayBuffer());
@@ -61,6 +63,7 @@ export async function POST(req) {
       description: description,
       restaurantId: restaurantId,
       image: upload.secure_url,
+      category:category
     });
 
     const result = await food.save();

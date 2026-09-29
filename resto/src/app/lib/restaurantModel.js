@@ -5,7 +5,8 @@ const restaurantSchema = new mongoose.Schema({
     type: String,
   },
   email: {
-    type: String
+    type: String,
+    unique: true
   },
   password: {
     type: String
@@ -19,10 +20,10 @@ const restaurantSchema = new mongoose.Schema({
   contact: {
     type: String
   },
-  image: {
-    type: String,
-    required: true
-  },
+  // image: {
+  //   type: String,
+  //   required: true
+  // },
 });
 
 export const Restaurants = mongoose.models.restaurants ||
