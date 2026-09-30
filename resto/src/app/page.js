@@ -12,12 +12,19 @@ export default function Home() {
   const [showlocations, setShowLocations] = useState(false);
   const [selectedlocations, setSelectedLocations] = useState();
   const [restaurants, setRestaurant] = useState([]);
+const [addedItem, setAddedItem] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
     loadLocations();
     loadRestaurants();
   }, []);
+
+
+const handleAddedItem = (data) => {
+    console.log("Added item from Category:", data);
+    setAddedItem(data);
+};
 
   const loadLocations = async () => {
     try {
@@ -57,10 +64,10 @@ export default function Home() {
     setShowLocations(false);
     loadRestaurants({ location: item });
   };
-
+      
   return (
     <div className="min-h-screen flex flex-col bg-[#F6F4EB] text-black">
-      <CustomerHeader />
+      <CustomerHeader cartData={addedItem} />
 
       {/* Hero Banner Section */}
       <section className="relative flex items-center justify-center min-h-[700px] bg-no-repeat bg-cover bg-center"
@@ -218,7 +225,7 @@ export default function Home() {
           </div>
         )}
       </main>
-      <Category />
+      <Category sendAddedItem={handleAddedItem} />
       <Footer />
     </div>
   );

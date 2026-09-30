@@ -4,15 +4,30 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const Category = () => {
+const Category = ({ sendAddedItem }) => {
     const [foods, setFoods] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("All");
+    const [addedItem, setAddedItem] = useState([])
+
+
+    useEffect(() => {
+        const cart = JSON.parse(
+            localStorage.getItem("cart") || "[]"
+        );
+
+        setAddedItem(Array.isArray(cart) ? cart : []);
+    }, []);
+
+    useEffect(() => {
+        getFoods();
+    }, []);
 
     // Get all foods
     const getFoods = async () => {
         try {
             const response = await axios.get("http://localhost:3000/api/category");
+            console.log(response , " this is response of category")
 
             if (response.data.success) {
                 const data = response.data.result;
@@ -31,9 +46,55 @@ const Category = () => {
         }
     };
 
-    useEffect(() => {
-        getFoods();
-    }, []);
+
+    const handleCart = async (item) => {
+
+        let oldCart = JSON.parse(localStorage.getItem("cart"))
+
+        if (oldCart[0]?.restaurantId !== item?.restaurantId) {
+            localStorage.removeItem("cart");
+
+            const newCart = [item];
+
+            localStorage.setItem(
+                "cart",
+                JSON.stringify(newCart)
+            );
+            setAddedItem(newCart);
+             sendAddedItem(newCart)
+        }
+        else {
+            const alreadyAdded = oldCart?.some(
+                (cartItem) => cartItem?._id === item?._id
+            );
+
+            if (alreadyAdded) {
+                return
+            }
+            const newCart = [...oldCart, item];
+
+            // Update localStorage
+            localStorage.setItem(
+                "cart",
+                JSON.stringify(newCart)
+            );
+
+            
+            // Update React state
+            setAddedItem(Array.isArray(newCart) ? newCart : []);
+            
+            sendAddedItem(newCart);
+
+            console.log(
+                newCart,
+                "updated cart"
+            );
+        }
+    }
+
+    const handleRemoveCart = async(item)=>{
+
+    }
 
     // Filter foods according to category
     const filteredFoods =
@@ -81,8 +142,12 @@ const Category = () => {
             {/* Food Items */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-                {filteredFoods.map((food) => (
-                    <div
+                {filteredFoods.map((food) => {
+                    const isAdded = addedItem?.some(
+                        (cartItem) => cartItem?._id === food?._id
+                    );
+
+                    return (<div
                         key={food._id}
                         className="bg-white rounded-2xl shadow-md overflow-hidden"
                     >
@@ -108,13 +173,16 @@ const Category = () => {
                                     ₹{food.price}
                                 </span>
 
-                                <button className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm">
+                                {isAdded ? <button onClick={() => handleRemoveCart(food)}  className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm">
+                                    Added
+                                </button> : <button onClick={() => handleCart(food)} className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm">
                                     Add
-                                </button>
+                                </button>}
                             </div>
                         </div>
                     </div>
-                ))}
+                    )
+                })}
 
             </div>
 
