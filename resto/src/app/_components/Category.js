@@ -49,7 +49,8 @@ const Category = ({ sendAddedItem }) => {
 
     const handleCart = async (item) => {
 
-        let oldCart = JSON.parse(localStorage.getItem("cart"))
+        let oldCart = JSON.parse(localStorage.getItem("cart") || "[]")
+        console.log(oldCart , " oldcart")
 
         if (oldCart[0]?.restaurantId !== item?.restaurantId) {
             localStorage.removeItem("cart");

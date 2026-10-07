@@ -1,4 +1,5 @@
 import { connectionStr } from "@/app/lib/db";
+import { Foods } from "@/app/lib/foodsModel";
 import { Order } from "@/app/lib/orderModel";
 import { Restaurants } from "@/app/lib/restaurantModel";
 import { User } from "@/app/lib/userModel";
@@ -7,13 +8,13 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
     const payload = await request.json()
- console.log(payload  , "kkkkkkkkkkkkkkkk")
+    console.log(payload, "kkkkkkkkkkkkkkkk")
     let success = false;
     console.log(payload?.collection, " this is my payload from the order now page llllllllllllllll")
     await mongoose.connect(connectionStr)
     const order = new Order(payload?.collection)
     const result = await order.save()
-    console.log(result , ' this is save result of order')
+    console.log(result, ' this is save result of order')
     if (result) {
         success = true
     }
@@ -44,16 +45,35 @@ export async function GET(request) {
             });
         }
 
+
         const restaurantIds = orders.map((order) => order.restaurantId)
+        const foodItemsIds = orders.map((order) => order.foodsItemsIds)
+
+        const ids = foodItemsIds[0];
+        const foods = await Foods.find({ _id: { $in: ids } })
 
         const restaurants = await Restaurants.find({ _id: { $in: restaurantIds } })
 
-        if (restaurants) {
+
+        const result = foods.map((food) => {
+            const restaurant = restaurants.find(
+                (restaurant) =>
+                    restaurant._id.toString() === food.restaurantId.toString()
+            );
+
+            return {
+                food,
+                restaurant
+            };
+        });
+
+        if (result) {
             success = true;
         }
-        return NextResponse.json({ success, result: restaurants })
+        return NextResponse.json({ success, result })
 
     } catch (error) {
+        console.log(error)
         return NextResponse.json({
             success: false,
             message: "Something went wrong"

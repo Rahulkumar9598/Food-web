@@ -17,7 +17,8 @@ const Page = () => {
 
   useEffect(() => {
     let user = JSON.parse(localStorage.getItem("user"));
-    user = user?.data?.result;
+    console.log(user , " user ...............")
+    // user = user?.data?.result;
     setUser(user);
   }, []);
 
@@ -162,7 +163,7 @@ const Page = () => {
                   <span className="text-gray-500 flex items-center gap-2">
                     <User className="w-4 h-4 text-gray-400" /> Name
                   </span>
-                  <span className="font-semibold text-black">{user?.name}</span>
+                  <span className="font-semibold text-black">{user?.name} </span>
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-gray-100">
                   <span className="text-gray-500 flex items-center gap-2">

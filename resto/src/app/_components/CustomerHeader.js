@@ -7,18 +7,30 @@ const CustomerHeader = (props) => {
     const [cartNumber, setCartNumber] = useState(0);
     const [user, setUser] = useState("");
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
+    console.log(user, " userrrrrrrrrrrrrrrrrrrrrrrrrr")
 
-        if (storedUser) {
-            try {
+    useEffect(() => {
+        const loadUser = () => {
+            const storedUser = localStorage.getItem("user");
+            console.log("storedUser from the header" , storedUser)
+
+            if (storedUser) {
                 const parsedUser = JSON.parse(storedUser);
-                setUser(parsedUser?.data?.result?.name || "");
-            } catch (error) {
-                console.log("Invalid user data:", error);
-                setUser("");
+                console.log("parsedUser from the header" , parsedUser)
+
+                const user = parsedUser
+                // console.log("user from the header" , user)
+                setUser(user);
             }
-        }
+        };
+
+        loadUser();
+
+        window.addEventListener("userUpdated", loadUser);
+
+        return () => {
+            window.removeEventListener("userUpdated", loadUser);
+        };
     }, []);
 
     useEffect(() => {
@@ -66,7 +78,7 @@ const CustomerHeader = (props) => {
                             href="/userProfile"
                             className="text-[15px] font-medium text-black hover:text-gray-600 transition-colors"
                         >
-                            {user?.charAt(0)?.toUpperCase() + user?.slice(1)}
+                            {user?.name?.charAt(0)?.toUpperCase() + user?.name?.slice(1)}
                         </Link>
                     )}
 
