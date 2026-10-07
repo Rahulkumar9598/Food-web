@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { Mail, Lock, LogIn } from 'lucide-react';
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "@/app/store/slices/userSlice";
 
 const UserSignIn = (props) => {
     console.log(props, " this is props");
@@ -9,9 +11,12 @@ const UserSignIn = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user.user);
 
-    let user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("user")) : null;
-    user = user?.data?.result?.email;
+
+    // let user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("user")) : null;
+    // user = user?.data?.result?.email;
 
     useEffect(() => {
         if (user) {
@@ -29,11 +34,13 @@ const UserSignIn = (props) => {
             console.log(response, " this is response of login");
 
             if (response.data.success) {
-                alert("User SignIn successfully");
+                localStorage.setItem("token", response.data.token);
+
                 delete response?.data?.result?.password;
                 delete response?.data?.result?.confirmPassword;
-                localStorage.setItem('user', JSON.stringify(response));
 
+                dispatch(setUser(response.data.result));
+                alert("User SignIn successfully");
                 if (props?.redirect) {
                     router.push("/order");
                 } else {

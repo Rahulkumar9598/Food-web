@@ -5,10 +5,11 @@ import Footer from '../_components/Footer';
 import { Delivery_Charges, TAX } from '../lib/constant/DelieveryChargers.js';
 import { useRouter } from 'next/navigation.js';
 import { ShoppingBag, Trash2, ArrowRight, Utensils, Receipt } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 const Page = () => {
     const router = useRouter();
-    const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("user")) : null;
+    const user = useSelector((state)=>state.user.user)
     console.log(user, " this is user from the cart");
 
     const [foodItems, setFoodItems] = useState(() => {

@@ -4,12 +4,15 @@ import React, { useEffect, useState } from 'react';
 import CustomerHeader from '../_components/CustomerHeader';
 import Footer from '../_components/Footer';
 import { Package, MapPin, Mail, Phone, Building, Utensils, User, Pencil, X, Save, LogOut } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { setUser } from '../store/slices/userSlice';
+import { useDispatch } from 'react-redux';
 
 
 const Page = () => {
   const [userOrders, setUserOrders] = useState([]);
-  const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -17,9 +20,11 @@ const Page = () => {
     city: "",
     address: "",
   });
+  
+  const user = useSelector((state) => state.user.user)
+  const userId = user?._id
+  console.log(user, " this is user profile ")
 
-  const userId = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("user"))._id : null;
-  console.log(userId, "userIdoooooooooooooo")
 
   const getData = async () => {
     if (!userId) return;
@@ -35,16 +40,8 @@ const Page = () => {
   };
 
 
-  const loadUser = () => {
-    const storedUser = localStorage.getItem("user");
-
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      console.log(parsedUser, " storedUser kkkkkkkkkkkkkkk")
-      const user = parsedUser
-      console.log(user, " user from the userProfile page")
-      setUser(user);
-
+  useEffect(() => {
+    if (user) {
       setFormData({
         name: user?.name || "",
         email: user?.email || "",
@@ -52,30 +49,40 @@ const Page = () => {
         address: user?.address || "",
       });
     }
-  }
-  console.log(formData, "this is my form data")
+  }, [user]);
+
 
   useEffect(() => {
-    loadUser()
     getData();
-  }, []);
+  }, [userId]);
 
 
   const handleEdit = async () => {
-    console.log(formData, " this is formData")
+  try {
+    console.log(formData, "this is formData");
 
-    const response = await axios.put(`http://localhost:3000/api/user/edit/${userId}`, formData);
-    console.log(response, " this is response of edit")
+    const response = await axios.put(
+      `http://localhost:3000/api/user/edit/${userId}`,
+      formData
+    );
+
+    console.log(response, "this is response of edit");
 
     if (response?.data?.success) {
       const updatedUser = response.data.result;
-      setUser(updatedUser)
-      localStorage.setItem("user", JSON.stringify(updatedUser))
-      window.dispatchEvent(new Event("userUpdated"));
-      setIsEditing(false);
-    }
 
+      dispatch(setUser(updatedUser));
+
+      setIsEditing(false);
+
+      console.log(updatedUser, "updated user");
+    }
+  } catch (error) {
+    console.log(
+      error.response?.data || error.message
+    );
   }
+};
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -114,28 +121,28 @@ const Page = () => {
             </div>
 
             {/* Edit Button */}
-         
-{!isEditing && (
-  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
-    
-    <button
-      onClick={() => setIsEditing(true)}
-      className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#E23744] text-white text-sm font-semibold hover:bg-[#c92f3b] transition whitespace-nowrap"
-    >
-      <Pencil className="w-4 h-4 flex-shrink-0" />
-      Edit Profile
-    </button>
 
-    <button
-      onClick={handleLogout}
-      className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-red-200 text-[#E23744] bg-red-50 text-sm font-semibold hover:bg-[#E23744] hover:text-white transition whitespace-nowrap"
-    >
-      <LogOut className="w-4 h-4 flex-shrink-0" />
-      Logout
-    </button>
+            {!isEditing && (
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
 
-  </div>
-)}
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#E23744] text-white text-sm font-semibold hover:bg-[#c92f3b] transition whitespace-nowrap"
+                >
+                  <Pencil className="w-4 h-4 flex-shrink-0" />
+                  Edit Profile
+                </button>
+
+                <button
+                  onClick={handleLogout}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-red-200 text-[#E23744] bg-red-50 text-sm font-semibold hover:bg-[#E23744] hover:text-white transition whitespace-nowrap"
+                >
+                  <LogOut className="w-4 h-4 flex-shrink-0" />
+                  Logout
+                </button>
+
+              </div>
+            )}
 
 
 

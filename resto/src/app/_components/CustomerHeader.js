@@ -2,21 +2,25 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { Utensils } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { setUser } from '../store/slices/userSlice';
 
 const CustomerHeader = (props) => {
     const [cartNumber, setCartNumber] = useState(0);
-    const [user, setUser] = useState("");
-
-    console.log(user, " userrrrrrrrrrrrrrrrrrrrrrrrrr")
+    // const [user, setUser] = useState("");
+    const user = useSelector((state) => state.user.user)
+    const isLoading = useSelector((state) => state.user.isLoading
+    );
+    console.log(user, " this is user from the header and redux")
 
     useEffect(() => {
         const loadUser = () => {
             const storedUser = localStorage.getItem("user");
-            console.log("storedUser from the header" , storedUser)
+            console.log("storedUser from the header", storedUser)
 
             if (storedUser) {
                 const parsedUser = JSON.parse(storedUser);
-                console.log("parsedUser from the header" , parsedUser)
+                console.log("parsedUser from the header", parsedUser)
 
                 const user = parsedUser
                 // console.log("user from the header" , user)
@@ -66,19 +70,23 @@ const CustomerHeader = (props) => {
                         Home
                     </Link>
 
-                    {!user ? (
-                        <Link
-                            href="/user-auth"
-                            className="text-[15px] font-medium text-black hover:text-gray-600 transition-colors"
-                        >
-                            Login
-                        </Link>
-                    ) : (
+                    { isLoading ? (
+                        <span>Loading...</span>
+
+                    ): user ? (
                         <Link
                             href="/userProfile"
                             className="text-[15px] font-medium text-black hover:text-gray-600 transition-colors"
                         >
                             {user?.name?.charAt(0)?.toUpperCase() + user?.name?.slice(1)}
+                        </Link> 
+
+                    ) : (
+                        <Link
+                            href="/user-auth"
+                            className="text-[15px] font-medium text-black hover:text-gray-600 transition-colors"
+                        >
+                            Login
                         </Link>
                     )}
 
