@@ -8,14 +8,10 @@ const Category = ({ sendAddedItem }) => {
     const [foods, setFoods] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("All");
-    const [addedItem, setAddedItem] = useState([])
-
+    const [addedItem, setAddedItem] = useState([]);
 
     useEffect(() => {
-        const cart = JSON.parse(
-            localStorage.getItem("cart") || "[]"
-        );
-
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
         setAddedItem(Array.isArray(cart) ? cart : []);
     }, []);
 
@@ -26,15 +22,15 @@ const Category = ({ sendAddedItem }) => {
     // Get all foods
     const getFoods = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/api/category");
-            console.log(response , " this is response of category")
+            const response = await axios.get(
+                "http://localhost:3000/api/category"
+            );
 
             if (response.data.success) {
                 const data = response.data.result;
 
                 setFoods(data);
 
-                // Get unique categories
                 const uniqueCategories = [
                     ...new Set(data.map((item) => item.category)),
                 ].filter(Boolean);
@@ -46,93 +42,92 @@ const Category = ({ sendAddedItem }) => {
         }
     };
 
+    // Update cart in localStorage, state and parent
+    const updateCart = (newCart) => {
+        localStorage.setItem("cart", JSON.stringify(newCart));
+        setAddedItem(newCart);
+        sendAddedItem?.(newCart);
+           window.dispatchEvent(new Event("cartUpdated"));
+    };
 
-    const handleCart = async (item) => {
+    // Add food to cart
+    const handleCart = (food) => {
+        const oldCart = JSON.parse(
+            localStorage.getItem("cart") || "[]"
+        );
 
-        let oldCart = JSON.parse(localStorage.getItem("cart") || "[]")
-        console.log(oldCart , " oldcart")
-
-        if (oldCart[0]?.restaurantId !== item?.restaurantId) {
-            localStorage.removeItem("cart");
-
-            const newCart = [item];
-
-            localStorage.setItem(
-                "cart",
-                JSON.stringify(newCart)
-            );
-            setAddedItem(newCart);
-             sendAddedItem(newCart)
+        // If another restaurant's food is in cart, replace it
+        if (oldCart.length > 0 && String(oldCart[0].restaurantId) !== String(food.restaurantId)) {
+            updateCart([{ ...food, quantity: 1 }]);
+            return;
         }
-        else {
-            const alreadyAdded = oldCart?.some(
-                (cartItem) => cartItem?._id === item?._id
-            );
 
-            if (alreadyAdded) {
-                return
-            }
-            const newCart = [...oldCart, item];
+        const existingItem = oldCart.find((item) => item._id === food._id);
 
-            // Update localStorage
-            localStorage.setItem(
-                "cart",
-                JSON.stringify(newCart)
-            );
-
-            
-            // Update React state
-            setAddedItem(Array.isArray(newCart) ? newCart : []);
-            
-            sendAddedItem(newCart);
-
-            console.log(
-                newCart,
-                "updated cart"
-            );
+        let newCart;
+        if (existingItem) {
+            newCart = oldCart.map((item) => item._id === food._id ? { ...item, quantity: (item.quantity || 1) + 1, } : item);
+        } else {
+            newCart = [...oldCart, { ...food, quantity: 1 },];
         }
-    }
 
-    const handleRemoveCart = async(item)=>{
+        updateCart(newCart);
+    };
+   
+    const handleIncreaseQuantity = (food) => {
+        const cart = JSON.parse(
+            localStorage.getItem("cart") || "[]"
+        );
 
-    }
+        const updatedCart = cart.map((item) =>item._id === food._id ? { ...item, quantity: (item.quantity || 1) + 1, } : item);
+        updateCart(updatedCart);
+    };
 
-    // Filter foods according to category
+    // Decrease quantity
+    const handleDecreaseQuantity = (food) => {
+        const cart = JSON.parse(
+            localStorage.getItem("cart") || "[]"
+        );
+
+        const updatedCart = cart.map((item) =>item._id === food._id? { ...item, quantity: (item.quantity || 1) - 1,}: item)
+            .filter((item) => item.quantity > 0);
+
+        updateCart(updatedCart);
+    };
+
+    // Filter foods by category
     const filteredFoods =
         selectedCategory === "All"
             ? foods
-            : foods.filter((item) => item.category === selectedCategory);
+            : foods.filter(
+                (item) => item.category === selectedCategory
+            );
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-10">
-
-            {/* Heading */}
             <h2 className="text-3xl font-bold text-black mb-6">
                 Explore Our Menu
             </h2>
 
             {/* Categories */}
             <div className="flex gap-3 flex-wrap mb-8">
-
-                {/* All Category */}
                 <button
                     onClick={() => setSelectedCategory("All")}
                     className={`px-5 py-2 rounded-full font-semibold ${selectedCategory === "All"
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-100 text-gray-700"
+                            ? "bg-red-500 text-white"
+                            : "bg-gray-100 text-gray-700"
                         }`}
                 >
                     All
                 </button>
 
-                {/* Other Categories */}
                 {categories.map((category) => (
                     <button
                         key={category}
                         onClick={() => setSelectedCategory(category)}
                         className={`px-5 py-2 rounded-full font-semibold ${selectedCategory === category
-                            ? "bg-red-500 text-white"
-                            : "bg-gray-100 text-gray-700"
+                                ? "bg-red-500 text-white"
+                                : "bg-gray-100 text-gray-700"
                             }`}
                     >
                         {category}
@@ -142,52 +137,80 @@ const Category = ({ sendAddedItem }) => {
 
             {/* Food Items */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
                 {filteredFoods.map((food) => {
-                    const isAdded = addedItem?.some(
-                        (cartItem) => cartItem?._id === food?._id
+                    const cartItem = addedItem.find(
+                        (item) => item._id === food._id
                     );
 
-                    return (<div
-                        key={food._id}
-                        className="bg-white rounded-2xl shadow-md overflow-hidden"
-                    >
-                        {/* Image */}
-                        <img
-                            src={food.image}
-                            alt={food.name}
-                            className="w-full h-48 object-cover"
-                        />
+                    const isAdded = Boolean(cartItem);
+                    const quantity = cartItem?.quantity ?? 1;
 
-                        {/* Details */}
-                        <div className="p-4">
-                            <h3 className="text-lg font-bold text-gray-800">
-                                {food.name}
-                            </h3>
+                    return (
+                        <div
+                            key={food._id}
+                            className="bg-white rounded-2xl shadow-md overflow-hidden"
+                        >
+                            <img
+                                src={food.image}
+                                alt={food.name}
+                                className="w-full h-48 object-cover"
+                            />
 
-                            <p className="text-sm text-gray-500 mt-2 line-clamp-2">
-                                {food.description}
-                            </p>
+                            <div className="p-4">
+                                <h3 className="text-lg font-bold text-gray-800">
+                                    {food.name}
+                                </h3>
 
-                            <div className="flex justify-between items-center mt-4">
-                                <span className="text-lg font-bold text-red-500">
-                                    ₹{food.price}
-                                </span>
+                                <p className="text-sm text-gray-500 mt-2 line-clamp-2">
+                                    {food.description}
+                                </p>
 
-                                {isAdded ? <button onClick={() => handleRemoveCart(food)}  className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm">
-                                    Added
-                                </button> : <button onClick={() => handleCart(food)} className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm">
-                                    Add
-                                </button>}
+                                <div className="flex justify-between items-center mt-4">
+                                    <span className="text-lg font-bold text-red-500">
+                                        ₹{food.price}
+                                    </span>
+
+                                    {isAdded ? (
+                                        <div className="flex items-center gap-3 bg-red-500 text-white px-3 py-2 rounded-lg">
+                                            <button
+                                                onClick={() =>
+                                                    handleDecreaseQuantity(food)
+                                                }
+                                                aria-label={`Decrease ${food.name} quantity`}
+                                                className="font-bold text-lg px-1"
+                                            >
+                                                −
+                                            </button>
+
+                                            <span className="font-semibold">
+                                                {quantity}
+                                            </span>
+
+                                            <button
+                                                onClick={() =>
+                                                    handleIncreaseQuantity(food)
+                                                }
+                                                aria-label={`Increase ${food.name} quantity`}
+                                                className="font-bold text-lg px-1"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            onClick={() => handleCart(food)}
+                                            className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm"
+                                        >
+                                            Add
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    )
+                    );
                 })}
-
             </div>
 
-            {/* No Food */}
             {filteredFoods.length === 0 && (
                 <p className="text-center text-gray-500 py-10">
                     No food found in this category.
@@ -198,3 +221,4 @@ const Category = ({ sendAddedItem }) => {
 };
 
 export default Category;
+

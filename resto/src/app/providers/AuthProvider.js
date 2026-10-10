@@ -15,6 +15,7 @@ const AuthProvider = ({ children }) => {
         console.log("token from the authproviders", token)
 
         if (!token) {
+            dispatch(logoutUser());
             return;
         }
 

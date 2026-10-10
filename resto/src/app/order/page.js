@@ -321,7 +321,7 @@ const Page = () => {
   // =========================
 
   const total = foodItems.reduce(
-    (total, item) => total + Number(item?.price || 0),
+    (total, item) => total + Number(item?.price*(item.quantity) || 0),
     0
   );
 

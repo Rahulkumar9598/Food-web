@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 
 const Page = () => {
     const router = useRouter();
-    const user = useSelector((state)=>state.user.user)
+    const user = useSelector((state) => state.user.user)
     console.log(user, " this is user from the cart");
 
     const [foodItems, setFoodItems] = useState(() => {
@@ -19,10 +19,15 @@ const Page = () => {
         return [];
     });
 
-    const [total] = useState(() =>
-        foodItems.length === 1
-            ? foodItems[0].price
-            : foodItems.reduce((total, item) => total + item.price, 0)
+    // const [total] = useState(() =>
+    //     foodItems.length === 1
+    //         ? foodItems[0].price
+    //         : foodItems.reduce((total, item) => total + item.price*(item.quantity || 1), 0)
+    // );
+
+    const total = foodItems.reduce(
+        (sum, item) => sum + Number(item.price) * (item.quantity || 1),
+        0
     );
     console.log(total, "total price");
 
@@ -33,6 +38,7 @@ const Page = () => {
 
         localStorage.setItem("cart", JSON.stringify(newCart));
         setFoodItems(newCart);
+        window.dispatchEvent(new Event("cartUpdated"));
     };
 
     const orderNow = () => {
@@ -42,6 +48,31 @@ const Page = () => {
             router.push("/user-auth?order=true");
         }
     };
+
+    const updatedCart = (newCart) => {
+        localStorage.setItem("cart", JSON.stringify(newCart))
+        setFoodItems(newCart)
+        window.dispatchEvent(new Event("cartUpdated"));
+    }
+
+
+    const handleDecrease = (item) => {
+        console.log(item, " item decrease form the cart")
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]")
+        const updateCart = cart.map((food) => food._id === item._id ? { ...food, quantity: (food.quantity || 1) - 1 } : food).filter((food) => food.quantity > 0)
+        updatedCart(updateCart)
+
+
+    }
+    const handleInecrease = (item) => {
+        console.log(item, " item handleInecrease form the cart")
+
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]")
+        const updateCart = cart.map((food) => food._id === item._id ? { ...food, quantity: (food.quantity || 1) + 1 } : food)
+        updatedCart(updateCart)
+
+
+    }
 
     return (
         <div className="min-h-screen flex flex-col bg-[#F6F4EB] text-black">
@@ -82,19 +113,37 @@ const Page = () => {
                                         )}
                                     </div>
 
-                                    <div className="flex-1 text-center sm:text-left">
-                                        <h3 className="text-lg font-bold text-black mb-1">{item?.name}</h3>
-                                        <p className="text-gray-500 text-xs line-clamp-2 mb-3 leading-relaxed">
+
+                                    <div className="flex-1 min-w-0 text-center sm:text-left">
+                                        <h3 className="text-base sm:text-lg font-bold text-black mb-1 break-words">
+                                            {item?.name} 
+                                        </h3>
+
+                                        <p className="text-gray-500 text-xs sm:text-sm line-clamp-2 mb-4 leading-relaxed">
                                             {item?.description}
                                         </p>
-                                        <button
-                                            onClick={() => handleRemoveFromCart(item)}
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-[#E23744] text-xs font-semibold rounded-xl transition-all cursor-pointer"
-                                        >
-                                            <Trash2 className="w-3.5 h-3.5" />
-                                            <span>Remove Item</span>
-                                        </button>
+
+                                        <div className="flex flex-col xs:flex-row sm:flex-row items-center sm:items-center gap-3">
+                                            {/* Quantity */}
+                                            <div className="inline-flex items-center justify-center min-w-12 px-4 py-2 bg-gray-100 border border-gray-200 text-[#E23744] text-sm font-bold rounded-xl">
+                                                <button disabled={(Number(item.quantity) || 1) <= 1} onClick={() => handleDecrease(item)} className='px-2 font-bold text-red-500 hover:text-red-300'>- </button>
+                                                Qty: {item?.quantity || 1}
+                                                <button onClick={() => handleInecrease(item)} className='px-2 font-bold text-red-500 hover:text-red-300'> + </button>
+                                            </div>
+
+                                            {/* Remove Button */}
+                                            <button
+                                                onClick={() => handleRemoveFromCart(item)}
+                                                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-[#E23744] text-xs sm:text-sm font-semibold rounded-xl transition-colors cursor-pointer"
+                                            >
+                                                <Trash2 className="w-4 h-4 shrink-0" />
+                                                <span>Remove Item</span>
+                                            </button>
+                                        </div>
                                     </div>
+
+
+
 
                                     <div className="text-right sm:self-start">
                                         <span className="text-lg font-bold text-[#E23744] bg-[#E23744]/5 border border-[#E23744]/10 px-3 py-1 rounded-xl">
@@ -113,6 +162,22 @@ const Page = () => {
                             </div>
 
                             <div className="space-y-3.5 text-sm text-gray-600">
+
+                                {foodItems.map((item) => (
+                                    <div
+                                        key={item._id}
+                                        className="flex items-center justify-between gap-3"
+                                    >
+                                        <span className="text-gray-500">
+                                            {item.name} (₹{Number(item.price)} × {Number(item.quantity) || 1})
+                                        </span>
+
+                                        <span className="font-semibold text-gray-800 whitespace-nowrap">
+                                            ₹{Number(item.price) * (Number(item.quantity) || 1)}
+                                        </span>
+                                    </div>
+                                ))}
+
                                 <div className="flex items-center justify-between">
                                     <span className="text-gray-500">Food Charges</span>
                                     <span className="font-semibold text-gray-800">₹{total}</span>

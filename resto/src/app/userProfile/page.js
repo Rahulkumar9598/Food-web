@@ -20,18 +20,20 @@ const Page = () => {
     city: "",
     address: "",
   });
-  
+    
   const user = useSelector((state) => state.user.user)
   const userId = user?._id
   console.log(user, " this is user profile ")
 
 
   const getData = async () => {
+    console.log(userId , " this is user id..........from user profile")
     if (!userId) return;
     try {
       const response = await axios.get(`http://localhost:3000/api/order?id=${userId}`);
       console.log(response, " user profile result");
       if (response.data.success) {
+        console.log(response.data ,"this is user from userprofile page"  )
         setUserOrders(response.data.result);
       }
     } catch (err) {
@@ -85,7 +87,7 @@ const Page = () => {
 };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     localStorage.removeItem("cart");
 
     window.location.href = "/user-auth";
@@ -95,7 +97,7 @@ const Page = () => {
     <div className="min-h-screen flex flex-col bg-[#F6F4EB] text-black">
       <CustomerHeader />
 
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
         {/* User Profile */}
         <div className="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm mb-8">
 
@@ -340,19 +342,20 @@ const Page = () => {
 
                   <div className="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
                     <img
-                      src={item.food.image}
-                      alt={item.food.name}
+                      src={item?.food?.image}
+                      alt={item?.food?.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
 
                   <div>
                     <h2 className="text-lg font-bold text-black">
-                      {item.food.name}
+                      {item.food?.name}
+                      
                     </h2>
 
                     <p className="text-sm font-semibold text-[#E23744]">
-                      ₹{item.food.price}
+                      ₹{item.food?.price}
                     </p>
 
                     <span className="text-xs px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200 font-semibold">
@@ -389,7 +392,7 @@ const Page = () => {
                     </p>
 
                     <p className="text-base font-bold text-gray-900">
-                      {item.restaurant.name}
+                  {item?.restaurant?.name || "Restaurant unavailable"}
                     </p>
                   </div>
 
@@ -405,7 +408,7 @@ const Page = () => {
                         </p>
 
                         <p className="text-xs font-medium text-gray-700">
-                          {item.restaurant.contact}
+                          {item.restaurant.contact  || "Not available"}
                         </p>
                       </div>
                     </div>
@@ -419,7 +422,7 @@ const Page = () => {
                         </p>
 
                         <p className="text-xs font-medium text-gray-700 capitalize">
-                          {item.restaurant.city}
+                      {item?.restaurant?.city || "Not available"}
                         </p>
                       </div>
                     </div>
@@ -436,7 +439,7 @@ const Page = () => {
                       </p>
 
                       <p className="text-xs font-medium text-gray-700 leading-relaxed">
-                        {item.restaurant.address}
+                        {item.restaurant.address  || "Not available"}
                       </p>
                     </div>
                   </div>

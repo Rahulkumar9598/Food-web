@@ -11,6 +11,10 @@ const CustomerHeader = (props) => {
     const user = useSelector((state) => state.user.user)
     const isLoading = useSelector((state) => state.user.isLoading
     );
+
+    console.log("User:", user);
+    console.log("Loading:", isLoading);
+
     console.log(user, " this is user from the header and redux")
 
     useEffect(() => {
@@ -37,10 +41,39 @@ const CustomerHeader = (props) => {
         };
     }, []);
 
+
+
     useEffect(() => {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
         setCartNumber(cart.length);
     }, [props.cartData]);
+
+
+
+    useEffect(() => {
+        const loadCart = () => {
+            const cart = JSON.parse(
+                localStorage.getItem("cart") || "[]"
+            );
+
+            setCartNumber(
+                cart.reduce(
+                    (total, item) =>
+                        total + (Number(item.length) || 1),
+                    0
+                )
+            );
+        };
+
+        loadCart();
+
+        window.addEventListener("cartUpdated", loadCart);
+
+        return () => {
+            window.removeEventListener("cartUpdated", loadCart);
+        };
+    }, []);
+
 
     useEffect(() => {
         if (props.removeCart) {
@@ -70,16 +103,16 @@ const CustomerHeader = (props) => {
                         Home
                     </Link>
 
-                    { isLoading ? (
+                    {isLoading ? (
                         <span>Loading...</span>
 
-                    ): user ? (
+                    ) : user ? (
                         <Link
                             href="/userProfile"
                             className="text-[15px] font-medium text-black hover:text-gray-600 transition-colors"
                         >
                             {user?.name?.charAt(0)?.toUpperCase() + user?.name?.slice(1)}
-                        </Link> 
+                        </Link>
 
                     ) : (
                         <Link

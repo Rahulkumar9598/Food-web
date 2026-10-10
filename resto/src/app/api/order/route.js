@@ -36,7 +36,9 @@ export async function GET(request) {
 
         await mongoose.connect(connectionStr)
 
-        const orders = await Order.find({ user_id: userId })
+        const orders = await Order.find({ user_id: userId }).sort({
+            _id: -1,
+        });
 
         if (!orders.length) {
             return NextResponse.json({
@@ -47,10 +49,10 @@ export async function GET(request) {
 
 
         const restaurantIds = orders.map((order) => order.restaurantId)
-        const foodItemsIds = orders.map((order) => order.foodsItemsIds)
+        const foodItemsIds = orders.flatMap((order) => order.foodsItemsIds)
 
-        const ids = foodItemsIds[0];
-        const foods = await Foods.find({ _id: { $in: ids } })
+        // const ids = foodItemsIds[0];
+        const foods = await Foods.find({ _id: { $in: foodItemsIds  } })
 
         const restaurants = await Restaurants.find({ _id: { $in: restaurantIds } })
 

@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { User, Mail, Lock, Building, MapPin, UserPlus } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../store/slices/userSlice';
 
 const UserSignup = (props) => {
     console.log(props, " this is props");
@@ -21,7 +23,8 @@ const UserSignup = (props) => {
 
         if (response.data.success) {
             alert("User registered successfully");
-            localStorage.setItem('user', JSON.stringify(response));
+            // localStorage.setItem('user', JSON.stringify(response.data.result));
+                  useDispatch(setUser(response.data.result));
 
             if (props.redirect) {
                 router.push('/order');

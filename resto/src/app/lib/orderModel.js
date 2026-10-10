@@ -28,8 +28,13 @@ const orderSchema = new mongoose.Schema({
     },
 
     amount: {
-        type: Number
+        type: Number,
+        required: true,
     },
+    quantity :{
+        type:Number,
+    
+    }
 });
 
 export const Order =
